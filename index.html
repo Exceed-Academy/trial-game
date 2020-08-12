@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Coin Collector</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.14.0/dist/phaser.min.js"></script>
+      <style>
+          #container {
+              text-align: center;
+          }
+      </style>
+  </head>
+  <body>
+      
+    <div id="container">
+        <h1>Exceed Academy - Coin Collector</h1>
+        <div id="game"></div>
+        <p>Game Guide: Use the arrow keys to move around and collect the coins.</p>
+    </div>
+    
+  <script>
+  
+class mainScene {
+  
+  preload() {
+    this.loadimage('player', 'assets/player.png');
+    this.loadimage('coin', 'assets/coin.png');
+  }
+
+  create() {
+  
+    this.score = 0;
+    this.player = this.place(300, 100, 'player');
+    this.coin = this.place(300, 200, 'coin');
+    this.scoreText = this.createtext(20, 20, 'score: ' + this.score);
+    this.arrow = this.enablekeyboard();
+  
+  }
+
+  update() {
+
+    if (this.bump(this.player, this.coin)) {
+      this.coinbump();
+    }
+
+    if (this.arrow.right.isDown) {
+      this.moveright();
+    } 
+      
+    if (this.arrow.left.isDown) {
+      this.moveleft();
+    } 
+
+    if (this.arrow.down.isDown) {
+      this.movedown();
+    }
+      
+    if (this.arrow.up.isDown) {
+      this.moveup();
+    } 
+  
+  }
+  
+  coinbump() {
+    
+    this.randomlyplace(this.coin);
+    this.increasescore(10);
+    this.playplayeranimation();
+  }
+
+  increasescore(num){
+    this.score += num;
+    this.scoreText.setText('score: ' + this.score);
+  }
+    
+  randomlyplace(object){
+    object.x = Phaser.Math.Between(100, 600);
+    object.y = Phaser.Math.Between(100, 200);      
+  }
+
+  playplayeranimation(){
+    this.tweens.add({
+      targets: this.player,
+      duration: 200,
+      scaleX: 1.2,
+      scaleY: 1.2,
+      yoyo: true,
+    });
+  }
+    
+  // Exceed Academy Free Class Utility
+  loadimage(name, location){
+      this.load.image(name, location);
+  }
+    
+  place(x, y, name){
+      return this.physics.add.sprite(x, y, name);
+  }
+
+  createtext(x, y, text){
+      let style = { font: '20px Arial', fill: '#fff' };
+      return this.add.text(x, y, text, style);
+  }
+
+  enablekeyboard(){
+      return this.input.keyboard.createCursorKeys();
+  }
+   
+  // Movement
+  moveleft(){
+      this.player.x -= 3;
+  }
+    
+  moveright(){
+      this.player.x += 3;
+  }
+
+  moveup(){
+      this.player.y -= 3;
+  }
+
+  movedown(){
+      this.player.y += 3;
+  }
+    
+  bump(obj1, obj2){
+      return this.physics.overlap(obj1, obj2);
+  }
+
+}
+
+new Phaser.Game({
+  width: 700,
+  height: 300,
+  backgroundColor: '#3498db',
+  scene: mainScene,
+  physics: { default: 'arcade' },
+  parent: 'game',
+});
+      
+  </script>      
+      
+  </body>
+</html>
